@@ -20,3 +20,22 @@ module "vpc" {
   }
 }
 #SG
+module "security_group" {
+  source      = "terraform-aws-modules/security-group/aws"
+  version     = "~> 5.0"
+  name        = "jenkins-sg"
+  description = "Security group for Jenkins server"
+  vpc_id      = module.vpc.default_vpc_id
+
+
+  ingress_rules       = ["ssh-tcp", "http-80-tcp", "https-443-tcp", ]
+  ingress_cidr_blocks = ["10.0.0.0/16"]
+
+  egress_rules       = ["all-all"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
+
+  tags = {
+    Environment = "dev"
+    Name        = "jenkins-sg"
+  }
+}
